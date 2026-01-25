@@ -1,7 +1,7 @@
-@extends('layouts.app')
+@extends('layouts.app', ['bodyClass' => 'bg-white'])
 
 @section('content')
-    <div class="flex flex-col items-center justify-center py-20 px-4">
+    <div class="mx-w-[1400px] mx-auto flex flex-col md:flex-row items-center justify-center py-20 px-4">
         <h1 class="text-3xl font-bold mb-16">会員登録</h1>
         <form method="POST" action="{{ route('register') }}" class="w-full max-w-[600px]" novalidate>
             @csrf

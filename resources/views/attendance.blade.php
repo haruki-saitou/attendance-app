@@ -2,26 +2,44 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="status-area">
-        <p>{{ $user->name }}お疲れ様です！</p> {{-- Figmaの仕様に基づき --}}
-    </div>
+    <div
+        class="container bg-[#F0EFF2] mx-w-[1400px] mx-auto px-8 py-4 flex flex-col items-center justify-center min-h-[calc(100vh-80px)]">
+        <div class="status-area bg-[#c8c8c8] flex justify-center items-center gap-1 py-2 px-4 rounded-full text-[#696969] font-bold">
+            @if (!$attendance)
+                <span></span>
+                <p class="status-text">勤務外</p>
+            @elseif ($attendance->check_out_time)
+                <span></span>
+                <p class="status-text">退勤済</p>
+            @elseif ($attendance->is_resting)
+                <span></span>
+                <p class="status-text">休憩中</p>
+            @else
+                <span></span>
+                <p class="status-text">出勤中</p>
+            @endif
+        </div>
 
-    <div class="clock-area text-center my-10">
-        <div id="real-time-date" class="text-2xl font-bold"></div>
-        <div id="real-time-clock" class="text-6xl font-bold text-center mt-2"></div>
-    </div>
+        <div class="clock-area text-center mb-8">
+            <div id="real-time-date" class="text-4xl my-10"></div>
+            <div id="real-time-clock" class="text-6xl font-bold text-center mt-2"></div>
+        </div>
 
-    <div class="button-area flex gap-4 max-w-4xl mx-auto mt-10">
-        {{-- ★部品（コンポーネント）を呼び出す★ --}}
-        <x-attendance-button text="勤務開始" action="/attendance/start" color="blue" />
-        <x-attendance-button text="勤務終了" action="/attendance/end" color="blue" :disabled="true" />
-    </div>
-    <div class="button-area flex gap-4 max-w-4xl mx-auto mt-4">
-        <x-attendance-button text="休憩開始" action="/rest/start" color="blue" />
-        <x-attendance-button text="休憩終了" action="/rest/end" color="blue" />
+        <div class="button-area flex justify-center gap-20 max-w-6xl mt-10">
+            @if (!$attendance)
+                <x-attendance-button text="出勤" action="{{ route('start.attendance') }}" type="main" />
+            @elseif ($attendance->check_out_time)
+                <span class="text-2xl font-bold">お疲れ様でした。</span>
+            @elseif ($attendance->is_resting)
+                <x-attendance-button text="休憩戻" action="{{ route('end.rest') }}" type="sub" />
+            @else
+                <x-attendance-button text="退勤" action="{{ route('end.attendance') }}" type="main" />
+                <x-attendance-button text="休憩入" action="{{ route('start.rest') }}" type="sub" />
+            @endif
+        </div>
     </div>
 @endsection
-@section('scripts')
+@section('js')
     <script>
         // リアルタイム時計のスクリプト
         function updateClock() {

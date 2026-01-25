@@ -31,4 +31,9 @@ class Attendance extends Model
     {
         return $this->hasMany(Rest::class);
     }
+
+    public function getIsRestingAttribute()
+    {
+        return $this->rests()->whereNull('rest_end_time')->exists();
+    }
 }
