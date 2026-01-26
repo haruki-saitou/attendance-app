@@ -8,7 +8,6 @@ use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class AttendanceController extends Controller
 {
@@ -28,7 +27,7 @@ class AttendanceController extends Controller
             ->where('date', $nowJst->day)
             ->first();
 
-        return view('attendance', compact('user', 'attendance'));
+        return view('staff.attendance', compact('user', 'attendance'));
     }
 
     public function start_attendance(Request $request)
@@ -70,7 +69,7 @@ class AttendanceController extends Controller
         if (!$user instanceof User) {
             abort(403, 'Unauthorized action.');
         }
-        
+
         $nowJst = now('Asia/Tokyo');
         // 1. 今日の出勤データを取得（日本時間の「今」の年月日で探します）
         $attendance = Attendance::where('user_id', $user->id)

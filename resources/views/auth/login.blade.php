@@ -17,7 +17,8 @@
             <div class="mb-10">
                 <label for="password" class="block text-lg font-bold mb-2">パスワード</label>
                 <input type="password" name="password" id="password"
-                    class="w-full border-[1.5px] border-gray-400 p-3 rounded focus:outline-none focus:border-gray-700" required>
+                    class="w-full border-[1.5px] border-gray-400 p-3 rounded focus:outline-none focus:border-gray-700"
+                    required>
                 @error('password')
                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                 @enderror
