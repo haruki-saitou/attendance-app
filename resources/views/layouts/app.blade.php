@@ -11,7 +11,7 @@
 
 <body class="{{ $bodyClass ?? 'bg-[#F0EFF2]' }}">
     <header class="bg-black text-white w-full">
-        <div class="max-w-[1400px] mx-auto px-8 py-3 flex flex-col md:flex-row items-center justify-between">
+        <div class="max-w-[1400px] mx-auto px-8 py-3 flex flex-col items-center justify-between">
             <div class="flex-shrink-0">
                 <a href="{{ route('attendance.top') }}">
                     <img src="{{ asset('images/COACHTECH.png') }}" alt="COACHTECH" class="h-6 md:h-8">

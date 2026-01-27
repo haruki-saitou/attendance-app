@@ -1,7 +1,7 @@
 @extends('layouts.app', ['bodyClass' => 'bg-white'])
 
 @section('content')
-    <div class="mx-w-[1400px] mx-auto flex flex-col md:flex-row items-center justify-center min-h-[80vh] px-4">
+    <div class="max-w-[1400px] mx-auto flex flex-col items-center justify-center min-h-[80vh] px-4">
         <div class="text-center mb-10">
             <h1 class="text-2xl font-bold leading-relaxed text-gray-800">
                 登録していただいたメールアドレスに認証メールを送信しました。<br>

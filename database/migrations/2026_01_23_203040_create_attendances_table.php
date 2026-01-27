@@ -14,16 +14,10 @@ return new class extends Migration
         Schema::create('attendances', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->integer('year');
-            $table->integer('month');
-            $table->integer('date');
-            $table->string('day');
             $table->string('status')->default('勤務外');
-            $table->time('check_in_time')->nullable();
-            $table->time('check_out_time')->nullable();
-            $table->integer('work_duration')->default(0); // in minutes
-            $table->integer('rest_duration')->default(0); // in minutes
-            $table->text('notes')->nullable();
+            $table->dateTime('check_in_at')->nullable();
+            $table->dateTime('check_out_at')->nullable();
+            $table->text('comment')->nullable();
             $table->timestamps();
         });
     }

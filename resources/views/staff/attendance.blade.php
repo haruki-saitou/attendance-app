@@ -3,12 +3,12 @@
 
 @section('content')
     <div
-        class="container bg-[#F0EFF2] mx-w-[1400px] mx-auto px-8 py-4 flex flex-col items-center justify-center min-h-[calc(100vh-80px)]">
+        class="container bg-[#F0EFF2] max-w-[1400px] mx-auto px-8 py-4 flex flex-col items-center justify-center min-h-[calc(100vh-80px)]">
         <div class="status-area bg-[#c8c8c8] flex justify-center items-center gap-1 py-2 px-4 rounded-full text-[#696969] font-bold">
             @if (!$attendance)
                 <span></span>
                 <p class="status-text">勤務外</p>
-            @elseif ($attendance->check_out_time)
+            @elseif ($attendance->check_out_at)
                 <span></span>
                 <p class="status-text">退勤済</p>
             @elseif ($attendance->is_resting)
@@ -28,7 +28,7 @@
         <div class="button-area flex justify-center gap-20 max-w-6xl mt-10">
             @if (!$attendance)
                 <x-attendance-button text="出勤" action="{{ route('start.attendance') }}" type="main" />
-            @elseif ($attendance->check_out_time)
+            @elseif ($attendance->check_out_at)
                 <span class="text-2xl font-bold">お疲れ様でした。</span>
             @elseif ($attendance->is_resting)
                 <x-attendance-button text="休憩戻" action="{{ route('end.rest') }}" type="sub" />

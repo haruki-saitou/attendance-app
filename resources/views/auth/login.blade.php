@@ -1,7 +1,7 @@
 @extends('layouts.app', ['bodyClass' => 'bg-white'])
 
 @section('content')
-    <div class="mx-w-[1400px] mx-auto flex flex-col md:flex-row items-center justify-center py-20 px-4">
+    <div class="max-w-[1400px] mx-auto flex flex-col items-center justify-center py-20 px-4">
         <h1 class="text-2xl font-bold mb-10">ログイン</h1>
         <form method="POST" action="{{ route('login') }}" class="w-full max-w-[600px]" novalidate>
             @csrf

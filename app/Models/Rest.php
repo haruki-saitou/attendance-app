@@ -10,9 +10,16 @@ class Rest extends Model
     use HasFactory;
     protected $fillable = [
         'attendance_id',
-        'rest_start_time',
-        'rest_end_time',
+        'start_at',
+        'end_at',
     ];
+
+    protected $casts = [
+        'start_at' => 'datetime',
+        'end_at' => 'datetime',
+    ];
+
+    // リレーションシップ: 勤怠
     public function attendance()
     {
         return $this->belongsTo(Attendance::class);
