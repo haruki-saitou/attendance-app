@@ -20,9 +20,15 @@
             @if (!Route::is('login') && !Route::is('register') && !Route::is('verification.notice'))
                 <nav class="flex items-center gap-6 lg:gap-8 text-md font-bold lg:text-md flex-shrink-0">
                     @auth
-                        <a href="{{ route('attendance.top') }}" class="hover:text-gray-300">勤怠</a>
-                        <a href="{{ route('attendance.list') }}" class="hover:text-gray-300">勤怠一覧</a>
-                        <a href="{{ route('stamp.list') }}" class="hover:text-gray-300">申請</a>
+                        @can('staff')
+                            <a href="{{ route('attendance.top') }}" class="hover:text-gray-300">勤怠</a>
+                            <a href="{{ route('attendance.list') }}" class="hover:text-gray-300">勤怠一覧</a>
+                            <a href="{{ route('stamp.list') }}" class="hover:text-gray-300">申請</a>
+                        @elsecan('admin')
+                            <a href="{{ route('admin.attendance.list') }}" class="hover:text-gray-300">勤怠一覧</a>
+                            <a href="#" class="hover:text-gray-300">スタッフ一覧</a>
+                            <a href="#" class="hover:text-gray-300">申請一覧</a>
+                        @endcan
                         <form method="POST" action="{{ route('logout') }}" style="display: inline;">
                             @csrf
                             <button type="submit" class="cursor-pointer hover:text-gray-300">ログアウト</button>

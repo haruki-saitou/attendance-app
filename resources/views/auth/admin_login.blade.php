@@ -8,8 +8,8 @@
         </div>
     @endif
     <div class="max-w-[1400px] mx-auto flex flex-col items-center justify-center py-20 px-4">
-        <h1 class="text-2xl font-bold mb-10">ログイン</h1>
-        <form method="POST" action="{{ route('login') }}" class="w-full max-w-[600px]" novalidate>
+        <h1 class="text-2xl font-bold mb-10">管理者ログイン</h1>
+        <form method="POST" action="" class="w-full max-w-[600px]" novalidate>
             @csrf
             <div class="mb-6">
                 <label for="email" class="block text-lg font-bold mb-2">メールアドレス</label>
@@ -31,11 +31,8 @@
             </div>
             <button type="submit"
                 class="w-full bg-black text-lg text-white font-bold mt-6 py-3 rounded-md hover:bg-gray-700 transition duration-200">
-                ログインする
+                管理者ログインする
             </button>
-            <div class="mt-6 text-center">
-                <a href="{{ route('register') }}" class="text-blue-500 hover:text-blue-700 hover:underline">会員登録はこちら</a>
-            </div>
         </form>
     </div>
 @endsection

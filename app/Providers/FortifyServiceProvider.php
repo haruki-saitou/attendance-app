@@ -13,6 +13,11 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Actions\RedirectIfTwoFactorAuthenticatable;
 use Laravel\Fortify\Fortify;
+use Laravel\Fortify\Contracts\LoginResponse as LoginResponseContract;
+use Laravel\Fortify\Http\Requests\LoginRequest as FortifyLoginRequest;
+use App\Http\Requests\LoginRequest;
+
+
 
 class FortifyServiceProvider extends ServiceProvider
 {
@@ -46,6 +51,43 @@ class FortifyServiceProvider extends ServiceProvider
 
         RateLimiter::for('two-factor', function (Request $request) {
             return Limit::perMinute(5)->by($request->session()->get('login.id'));
+        });
+
+        Fortify::loginView(function () {
+            if (request()->is('admin/*')) {
+                return view('auth.admin_login');
+            }
+            return view('auth.login');
+        });
+
+        $this->app->instance(\Laravel\Fortify\Contracts\VerifyEmailResponse::class, new class implements
+        \Laravel\Fortify\Contracts\VerifyEmailResponse {
+        public function toResponse($request)
+            {
+                return redirect()->route('attendance.top')->with('status', 'メールアドレスが認証されました。');
+            }
+        });
+
+        $this->app->bind(FortifyLoginRequest::class, LoginRequest::class);
+        $this->app->instance(LoginResponseContract::class, new class implements LoginResponseContract {
+            public function toResponse($request)
+            {
+                if ($request->user()->role === 1) {
+                    return redirect('/admin/attendance/list');
+                }
+                return redirect('/attendance');
+            }
+        });
+
+        $this->app->instance(\Laravel\Fortify\Contracts\LogoutResponse::class, new class implements \Laravel\Fortify\Contracts\LogoutResponse {
+
+            public function toResponse($request)
+            {
+                if ($request->is('admin/*') || str_contains(url()->previous(), 'admin')) {
+                    return redirect('/admin/login')->with('status', 'ログアウトしました');
+                }
+                return redirect('/login')->with('status', 'ログアウトしました');
+            }
         });
     }
 }

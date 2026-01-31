@@ -7,24 +7,34 @@ use App\Models\User;
 use App\Models\Attendance;
 use App\Models\Rest;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. テスト用のユーザーを作る（ログイン用）
-        $user = User::create([
-            'name' => 'テスト太郎',
-            'email' => 'test@example.com',
-            'password' => bcrypt('password'),
+        // 1. 管理者を作る（ログイン用）
+        User::create([
+            'name' => '管理者太郎',
+            'email' => 'admin@example.com',
+            'password' => Hash::make('password'),
+            'role' => 1,
             'email_verified_at' => now(),
         ]);
 
+        $staffCount = 10;
+        for ($s = 1; $s <= $staffCount; $s++) {
+            $user = User::create([
+                'name' => "スタッフ{$s}",
+                'email' => "staff{$s}@example.com",
+                'password' => Hash::make('password'),
+                'role' => 0,
+                'email_verified_at' => now(),
+            ]);
+        }
         // 2. 1月の1ヶ月分のデータを作る（プロの怠惰：ループで自動作成）
         $date = Carbon::create(2026, 1, 1);
-        $daysInMonth = $date->daysInMonth;
-
-        for ($i = 0; $i < $daysInMonth; $i++) {
+        for ($i = 0; $i < $date->daysInMonth; $i++) {
             $currentDate = $date->copy()->addDays($i);
 
             // 土日はスキップ（weekendを自動判別）

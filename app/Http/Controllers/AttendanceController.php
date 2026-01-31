@@ -91,13 +91,14 @@ class AttendanceController extends Controller
 
     public function attendance_detail($id)
     {
-        $user = Auth::user();
+        $attendance = Attendance::with('rests', 'user')->findOrFail($id);
 
-        $attendance = Attendance::where('user_id', $user->id)
-            ->where('id', $id)
-            ->with('rests')
-            ->firstOrFail();
+        $loginUser = Auth::user();
 
+        if ($loginUser->cannot('admin') && $loginUser->id !== $attendance->user_id) {
+            abort(403);
+        }
+        $user = $attendance->user;
         $attendanceCorrect = AttendanceCorrect::where('attendance_id', $attendance->id)->latest()->first();
 
         return view('staff.attendance_detail', compact('attendance', 'user', 'attendanceCorrect'));
@@ -139,7 +140,7 @@ class AttendanceController extends Controller
         return redirect()->route('attendance.detail', ['id' => $attendance->id])->with('success', '修正依頼を申請しました。');
     }
 
-    public function stamp_list()
+    public function stamp_list(Request $request)
     {
         $user = Auth::user();
         $tab = request()->query('tab', 'pending');
