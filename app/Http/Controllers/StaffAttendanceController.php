@@ -7,6 +7,7 @@ use App\Models\Attendance;
 use App\Models\AttendanceCorrect;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use App\Http\Requests\UpdateAttendanceRequest;
 
 
 class StaffAttendanceController extends Controller
@@ -105,13 +106,20 @@ class StaffAttendanceController extends Controller
     }
 
     // 勤怠詳細
-    public function attendance_detail_update(Request $request, $id)
+    public function attendance_detail_update(UpdateAttendanceRequest $request, $id)
     {
+        /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        $attendance = Attendance::where('user_id', $user->id)
-            ->where('id', $id)
-            ->firstOrFail();
+        $query = Attendance::query();
+        if (!$user->can('admin')) {
+            $query->where('user_id', $user->id);
+        }
+        $attendance = $query->where('id', $id)->first();
+
+        if (!$attendance) {
+            abort(403);
+        }
 
         $date = $attendance->check_in_at->format('Y-m-d');
         $new_check_in = Carbon::parse($date . ' ' . ($request->input('check_in_at') ?: $attendance->check_in_at->format('H:i')));
@@ -128,16 +136,34 @@ class StaffAttendanceController extends Controller
                 'end_at' => (!empty($rest_ends[$index])) ? Carbon::parse($date . ' ' . $rest_ends[$index])->toDateTimeString() : null,
             ];
         }
-        AttendanceCorrect::create([
+        if ($user->can('admin')) {
+            $attendance->update([
+                'status' => '承認済み',
+                'check_in_at' => $new_check_in,
+                'check_out_at' => $new_check_out,
+                'comment' => $request->input('comment'),
+            ]);
+            $attendance->rests()->delete();
+            foreach ($updated_rests as $rest) {
+                $attendance->rests()->create([
+                    'start_at' => $rest['start_at'],
+                    'end_at' => $rest['end_at'],
+                ]);
+            }
+            $status_message = '勤怠情報を修正しました。';
+        }else{
+            AttendanceCorrect::create([
             'attendance_id' => $attendance->id,
             'updated_check_in_at' => $new_check_in,
             'updated_check_out_at' => $new_check_out,
             'updated_comment' => $request->input('comment'),
             'updated_rests' => $updated_rests,
         ]);
-
-        $attendance->update(['status' => '承認待ち']);
-
-        return redirect()->route('attendance.detail', ['id' => $attendance->id])->with('status', '修正依頼を申請しました。');
+            $attendance->update([
+                'status' => '承認待ち',
+            ]);
+            $status_message = '修正依頼を申請しました。';
+        }
+        return redirect()->route('attendance.detail', ['id' => $attendance->id])->with('status', $status_message);
     }
 }

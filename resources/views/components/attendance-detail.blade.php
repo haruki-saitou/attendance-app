@@ -9,18 +9,26 @@
                 {{ session('status') }}
             </div>
         @endif
+        @if ($errors->any())
+            <div class="max-w-[900px] bg-red-100 border border-red-400 text-red-700 px-6 py-4 rounded my-2 mx-auto shadow-sm">
+                <p class="font-bold mb-2">入力内容に不備があります。以下を確認してください：</p>
+                <ul class="list-disc list-inside text-sm">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
             <h1 class="border-l-8 border-black pl-4 text-3xl font-bold mt-6 mb-6">勤怠詳細</h1>
             <form action="{{ route('attendance.update', ['id' => $attendance->id]) }}" method="POST">
                 @csrf
+                @method('PATCH')
                 @php
                     $isPending = isset($attendanceCorrect) && !$attendanceCorrect->trashed();
                     $isApproved = ($attendance->status === '承認済み');
                     $hasBorder = ($isPending || $isApproved) ? '' : 'border border-[#E1E1E1] mt-16';
                     $marginTop = ($isPending || $isApproved) ? 'mt-12' : '';
                 @endphp
-                @unless (Auth::user()->can('admin') && $isPending)
-                    @method('PATCH')
-                @endunless
                 <div class="{{ $hasBorder }} {{ $marginTop }} rounded-lg overflow-hidden w-full max-[800px]">
                     <table class="w-full bg-white text-[#737373] font-bold border-collapse">
                         <tbody>
@@ -79,7 +87,10 @@
                                 @endforeach
                                 {{-- 休憩 (通常時:入力枠を出す) --}}
                             @else
-                                @for ($i = 0; $i < 2; $i++)
+                            @php
+                            $restCount = count($attendance->rests) + 1;
+                            @endphp
+                                @for ($i = 0; $i < $restCount; $i++)
                                     @php $rest = $attendance->rests[$i] ?? null; @endphp
                                     <tr class="text-lg border-b-2 border-[#E1E1E1]">
                                         <th class="py-8 px-14 text-left">休憩{{ $i > 0 ? $i + 1 : '' }}</th>
@@ -104,7 +115,7 @@
                                             {{ $isApproved ? $attendance->comment : ($attendanceCorrect->updated_comment ?? '' )}}</div>
                                     @else
                                         <textarea name="comment"
-                                            class="border border-[#E1E1E1] rounded p-2 mt-1 h-20 w-full max-w-[306px] text-gray-900 font-bold focus:outline-none resize-none">{{ $attendance->comment ?? '' }}</textarea>
+                                            class="border border-[#E1E1E1] rounded p-2 mt-1 h-20 w-full max-w-[306px] text-gray-900 font-bold focus:outline-none resize-none">{{ old('comment', $attendance->comment ?? '') }}</textarea>
                                     @endif
                                 </td>
                             </tr>
@@ -121,7 +132,7 @@
                         @elseif($isApproved)
                             <span class="bg-[#8B8B8B] text-white px-6 py-3 text-xl font-bold rounded-md cursor-not-allowed">承認済み</span>
                         @else
-                            <button type="button"
+                            <button type="submit"
                                 class="bg-gray-900 text-white hover:bg-gray-700 inline-block px-12 py-3 text-xl font-bold rounded-md transition cursor-pointer">
                                 修正
                             </button>

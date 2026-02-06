@@ -20,6 +20,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     // 申請一覧のルート（認証ミドルウェアで区別）
     Route::get('/stamp_correction_request/list', [CommonAttendanceController::class, 'stamp_list'])->name('stamp.list');
+    // 勤怠詳細画面のルート
+    Route::get('/attendance/detail/{id}', [CommonAttendanceController::class, 'detail'])->name('attendance.detail');
+    // 勤怠修正申請のルート
+    Route::patch('/attendance/detail/{id}', [StaffAttendanceController::class, 'attendance_detail_update'])->name('attendance.update');
 
     // ============================================================
     // 👑 管理者専用エリア（can:admin）
@@ -55,9 +59,5 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::post('/rest/end', [RestController::class, 'end_rest'])->name('end.rest');
         // 勤怠一覧のルート
         Route::get('/attendance/list', [StaffAttendanceController::class, 'attendance_list'])->name('attendance.list');
-        // 勤怠詳細画面のルート
-        Route::get('/attendance/detail/{id}', [CommonAttendanceController::class, 'detail'])->name('attendance.detail');
-        // 勤怠修正申請のルート
-        Route::patch('/attendance/detail/{id}', [StaffAttendanceController::class, 'attendance_detail_update'])->name('attendance.update');
     });
 });

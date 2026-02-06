@@ -36,8 +36,10 @@ class CommonAttendanceController extends Controller
         /** @var \App\Models\User $loginUser */
         $loginUser = Auth::user();
 
-        if ($loginUser->cannot('admin') && $loginUser->id !== $attendance->user_id) {
-            abort(403);
+        if (!$loginUser->can('admin')) {
+            if ($loginUser->id !== $attendance->user_id) {
+                return abort(403);
+            }
         }
         $dir = $loginUser->can('admin') ? 'admin' : 'staff';
         $user = $attendance->user;
