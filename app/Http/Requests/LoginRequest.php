@@ -27,6 +27,7 @@ class LoginRequest extends FortifyLoginRequest
         ];
     }
 
+
     public function messages()
     {
         return [
