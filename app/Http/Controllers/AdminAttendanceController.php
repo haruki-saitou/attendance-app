@@ -105,10 +105,15 @@ class AdminAttendanceController extends Controller
         return back()->with('status', '承認しました');
     }
 
-    public function export_csv($id)
+    public function export_csv($id, Request $request)
     {
         $user = User::findOrFail($id);
+        $month = $request->query('month', today()->format('Y-m'));
+        $date = Carbon::parse($month);
+        $startOfMonth = $date->copy()->startOfMonth();
+        $endOfMonth = $date->copy()->endOfMonth();
         $attendances = Attendance::where('user_id', $id)
+            ->whereBetween('check_in_at', [$startOfMonth, $endOfMonth])
             ->with('rests')
             ->orderBy('check_in_at', 'asc')
             ->get();

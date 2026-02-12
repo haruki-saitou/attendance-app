@@ -70,7 +70,7 @@ class StaffAttendanceController extends Controller
             'status' => '退勤済'
         ]);
 
-        return redirect()->route('attendance.top');
+        return redirect()->route('attendance.top')->with('is_completed', true);
     }
 
     // 勤怠一覧

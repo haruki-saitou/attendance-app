@@ -23,7 +23,7 @@
             </div>
             <x-attendance-table :dates="$dates" :showUser="false" routeName="admin.attendance.detail" />
             <div class="w-full max-w-[900px] flex justify-end mt-12">
-                <a href="{{ route('admin.attendance.export', ['id' => $user->id]) }}"
+                <a href="{{ route('admin.attendance.export', ['id' => $user->id, 'month' => $date->format('Y-m')]) }}"
                     class="bg-gray-900 text-white hover:bg-gray-700 inline-block px-12 py-3 text-xl font-bold rounded-md transition cursor-pointer">CSV出力</a>
             </div>
         </div>

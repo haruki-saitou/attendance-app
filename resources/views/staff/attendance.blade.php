@@ -35,7 +35,7 @@
 
         <div class="clock-area text-center mb-8">
             <div id="real-time-date" class="text-4xl my-10"></div>
-            <div id="real-time-clock" class="text-6xl font-bold text-center mt-2"></div>
+            <div id="real-time-clock" class="text-7xl font-bold text-center mt-2"></div>
         </div>
 
         <div class="button-area flex justify-center gap-16 max-w-6xl mt-10">
