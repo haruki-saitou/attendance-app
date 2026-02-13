@@ -215,8 +215,7 @@ MacBook Air M4を使用して開発。
 - users(1) : attendances(0または多) : １人のユーザーに複数の勤怠記録    
 - attendances(1) : rests(0または多) : １回の勤怠に複数の休憩   
 - attendances(1) : attendance_corrects(0または1) : １回の勤怠に１つの修正申請データ  
-- users(1) : attendance_corrects(0または多) : １人のユーザーに複数の修正申請  
-  
+    
 ---  
   
 ### Usersテーブル(ユーザー情報)
