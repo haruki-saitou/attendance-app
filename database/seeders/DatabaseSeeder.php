@@ -43,6 +43,10 @@ class DatabaseSeeder extends Seeder
                     continue;
                 }
 
+                if ($currentDate->isToday()) {
+                    continue;
+                }
+
                 // 出勤データ
                 $attendance = Attendance::create([
                     'user_id' => $user->id,
